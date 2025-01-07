@@ -9,7 +9,7 @@ body {
     margin-bottom: 20px;
 }
 .h1 {
-    font-size: large;
+    font-size: 2rem;
 }
 .container {
     max-width: 1200px;
@@ -29,7 +29,13 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
     gap: 20px;
 }
-
+.showMoreBtn {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 .news-card {
     border: 1px solid #ccc;
     border-radius: 8px;

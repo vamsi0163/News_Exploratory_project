@@ -355,11 +355,22 @@ const data = [
 },
 ];
 
+//sort the data by date and time(latest first)
+data.sort((a, b) => {
+    const dateA = new Date(a.dateAndTime.split(', ')[0].split('/').reverse().join('-') + 'T' + a.dateAndTime.split(', ')[1]);
+    const dateB = new Date(b.dateAndTime.split(', ')[0].split('/').reverse().join('-') + 'T' + b.dateAndTime.split(', ')[1]);
+    return dateB - dateA;
+});
+// data.sort((a,b)=> a.dateAndTime > b.dateAndTime ? -1 : 1);
+// console.log(data);
+let currentIndex = 0;
+const itemsPerPage = 7;
 function displayNewsCards() {
 const newsGrid = document.getElementById('newsGrid');
 
+const articlesToDisplay = data.slice(currentIndex, currentIndex + itemsPerPage);
 // Loop through the first seven articles in the data
-data.slice(0, 7).forEach(news => {
+articlesToDisplay.forEach(news => {
     const card = document.createElement('div');
     card.className = 'news-card';
     card.innerHTML = `
@@ -371,6 +382,12 @@ data.slice(0, 7).forEach(news => {
     
     newsGrid.appendChild(card);
 });
+currentIndex += itemsPerPage;
+if (currentIndex>=data.length){
+    document.getElementById('showMoreBtn');
 }
+
+}
+document.getElementById('showMoreBtn').addEventListener('click', displayNewsCards);
 
 displayNewsCards();
