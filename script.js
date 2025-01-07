@@ -386,8 +386,9 @@ const createShowMoreButton = () => {
 };
 
 // Call the functions to create the input and button
-createSearchInput();
 createShowMoreButton();
+createSearchInput();
+
 
 let currentIndex = 0;
 const itemsPerPage = 7;
@@ -400,7 +401,6 @@ const displayNews = (start, end, searchQuery = '') => {
         newsItem.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
         newsItem.content.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
     const newsToDisplay = filteredData.slice(start, end);
 
     newsToDisplay.forEach(newsItem => {
