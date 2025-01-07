@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News Explorer</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .highlight {
+            background-color: yellow;
+        }
+    </style>
 </head>
 <body>
-    <div class="search-bar"></div>
-        <input type="text" id="searchInput" placeholder="dolor sit...">
+    <!-- <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search news...">
         <button id="searchButton">Search</button>
-    </div>
+    </div> -->
     <div class="container">
         <h1>Top Stories for you</h1>
         <div class="button-container">
@@ -20,9 +25,10 @@
             <button>Sports</button>
             <button>Entertainment</button>
         </div>
-        <div class="news-grid" id="newsGrid">
+        <div class="news-grid" id="news-grid">
+            <!-- News articles will be dynamically inserted here -->
         </div>
-        <button id="showMoreBtn">Show More</button>
+        <!-- <button id="show-more-btn">Show More</button> -->
     </div>
 
     <script src="script.js"></script>

@@ -355,39 +355,127 @@ const data = [
 },
 ];
 
-//sort the data by date and time(latest first)
-data.sort((a, b) => {
-    const dateA = new Date(a.dateAndTime.split(', ')[0].split('/').reverse().join('-') + 'T' + a.dateAndTime.split(', ')[1]);
-    const dateB = new Date(b.dateAndTime.split(', ')[0].split('/').reverse().join('-') + 'T' + b.dateAndTime.split(', ')[1]);
-    return dateB - dateA;
-});
-// data.sort((a,b)=> a.dateAndTime > b.dateAndTime ? -1 : 1);
-// console.log(data);
+
+const sortNewsByDate = () => {
+    data.sort((a, b) => {
+        const dateA = new Date(a.dateAndTime.split(', ')[0].split('/').reverse().join('-') + 'T' + a.dateAndTime.split(', ')[1]);
+        const dateB = new Date(b.dateAndTime.split(', ')[0].split('/').reverse().join('-') + 'T' + b.dateAndTime.split(', ')[1]);
+        return dateB - dateA;
+    });
+};
+
+const createSearchInput = () => {
+    const body = document.body;
+
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.id = 'search-input';
+    searchInput.placeholder = 'Search news...';
+
+    body.insertBefore(searchInput, body.firstChild);
+};
+
+const createShowMoreButton = () => {
+    const newsGrid = document.querySelector('.news-grid');
+
+    const showMoreButton = document.createElement('button');
+    showMoreButton.id = 'show-more-btn';
+    showMoreButton.textContent = 'Show More';
+
+    newsGrid.parentNode.insertBefore(showMoreButton, newsGrid.nextSibling);
+};
+
+// Call the functions to create the input and button
+createShowMoreButton();
+createSearchInput();
+
+
 let currentIndex = 0;
 const itemsPerPage = 7;
-function displayNewsCards() {
-const newsGrid = document.getElementById('newsGrid');
 
-const articlesToDisplay = data.slice(currentIndex, currentIndex + itemsPerPage);
-// Loop through the first seven articles in the data
-articlesToDisplay.forEach(news => {
-    const card = document.createElement('div');
-    card.className = 'news-card';
-    card.innerHTML = `
-        <h3>${news.title}</h3>
-        <p><strong>Category:</strong> ${news.category}</p>
-        <p>${news.content}</p>
-        <p><em>${news.dateAndTime}</em></p>
-    `;
-    
-    newsGrid.appendChild(card);
-});
-currentIndex += itemsPerPage;
-if (currentIndex>=data.length){
-    document.getElementById('showMoreBtn');
-}
+const displayNews = (start, end, searchQuery = '') => {
+    const newsGrid = document.getElementById('news-grid');
+    newsGrid.innerHTML = ""; // Clear existing news items
 
-}
-document.getElementById('showMoreBtn').addEventListener('click', displayNewsCards);
+    const filteredData = data.filter(newsItem => 
+        newsItem.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        newsItem.content.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const newsToDisplay = filteredData.slice(start, end);
 
-displayNewsCards();
+    newsToDisplay.forEach(newsItem => {
+        const card = document.createElement('div');
+        card.classList.add('news-card');
+
+        const category = document.createElement('p');
+        category.classList.add('category');
+        category.textContent = `Category: ${newsItem.category}`;
+
+        const title = document.createElement('h2');
+        title.innerHTML = highlightSearchTerm(newsItem.title, searchQuery);
+
+        const content = document.createElement('p');
+        const contentText = newsItem.content.length > 150 ? newsItem.content.substring(0, 150) + '...' : newsItem.content;
+        content.innerHTML = highlightSearchTerm(contentText, searchQuery);
+
+        const dateAndTime = document.createElement('p');
+        dateAndTime.classList.add('date-time');
+        dateAndTime.textContent = `Posted on: ${newsItem.dateAndTime}`;
+
+        card.appendChild(category);
+        card.appendChild(title);
+        card.appendChild(content);
+        card.appendChild(dateAndTime);
+
+        newsGrid.appendChild(card);
+    });
+
+    // Update the currentIndex for the next batch of articles
+    currentIndex = end;
+
+    // Show or hide the "Show More" button based on remaining articles
+    if (currentIndex >= filteredData.length) {
+        document.getElementById('show-more-btn').style.display = 'none';
+    } else {
+        document.getElementById('show-more-btn').style.display = 'block';
+    }
+};
+
+const showMoreNews = () => {
+    displayNews(currentIndex, currentIndex + itemsPerPage, document.getElementById('search-input').value);
+};
+
+const debounce = (func, delay) => {
+    let debounceTimer;
+    return function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => func.apply(this, arguments), delay);
+    };
+};
+
+const handleSearch = debounce(() => {
+    currentIndex = 0; // Reset index for new search
+    const searchQuery = document.getElementById('search-input').value;
+    displayNews(0, itemsPerPage, searchQuery);
+}, 300);
+
+const highlightSearchTerm = (text, searchQuery) => {
+    if (!searchQuery) return text;
+    const regex = new RegExp(`(${searchQuery})`, 'gi');
+    const highlightedText = text.replace(regex, '<span class="highlight">$1</span>');
+    return highlightedText;
+};
+
+const style = document.createElement('style');
+style.innerHTML = `
+    .highlight {
+        background-color: yellow;
+    }
+`;
+document.head.appendChild(style);
+
+document.getElementById('search-input').addEventListener('input', handleSearch);
+document.getElementById('show-more-btn').addEventListener('click', showMoreNews);
+
+sortNewsByDate();
+displayNews(0, itemsPerPage);
