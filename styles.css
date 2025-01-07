@@ -1,56 +1,138 @@
+/* Reset default margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
     padding: 20px;
 }
+
+/* Search bar styling */
 .search-bar {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
 }
-.h1 {
+
+/* Header styling */
+h1 {
     font-size: 2rem;
+    text-align: center;
+    margin-bottom: 20px;
 }
+
+/* Container styling */
 .container {
     max-width: 1200px;
     margin: auto;
-    align-self: center;
     padding-bottom: 10px;
 }
 
+/* Button container styling */
 .button-container {
     display: flex;
-    width:max-content;
     justify-content: center;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-bottom: 20px;
 }
+
+.button-container button {
+    padding: 10px 20px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-container button:hover {
+    background-color: #0056b3;
+}
+
+/* Grid container for news cards */
 .news-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
+    padding: 20px;
 }
-.showMoreBtn {
+
+/* Style for each individual news card */
+.news-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Image inside news card */
+.news-card img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+/* Title of the news card */
+.news-card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Description text in the news card */
+.news-card p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Styling for news category */
+.news-card .category {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Date-time styling */
+.news-card .date-time {
+    font-size: 12px;
+    color: #bbb;
+    margin-top: 10px;
+}
+
+/* Style for the Show More button */
+#show-more-btn {
+    display: block;
+    margin: 20px auto;
     padding: 10px 20px;
+    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-.news-card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-size: 16px;
 }
 
-.news-card img {
-    width: 100%;
+#show-more-btn:hover {
+    background-color: #45a049;
 }
 
-.news-card h3 {
-    margin: 10px;
-}
-
-.news-card p {
-    margin: 10px;
+/* Highlight styling */
+.highlight {
+    background-color: rgb(234, 46, 46);
+    color: white;
 }
