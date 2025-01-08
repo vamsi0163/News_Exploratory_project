@@ -390,17 +390,27 @@ createShowMoreButton();
 createSearchInput();
 
 
+// Initialize selected categories with 'all'
+let selectedCategories = new Set(['all']);
 let currentIndex = 0;
 const itemsPerPage = 7;
 
+// Display news articles
 const displayNews = (start, end, searchQuery = '') => {
     const newsGrid = document.getElementById('news-grid');
+    if (!newsGrid) {
+        console.error("Element with ID 'news-grid' not found.");
+        return;
+    }
     newsGrid.innerHTML = ""; // Clear existing news items
 
-    const filteredData = data.filter(newsItem => 
-        newsItem.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        newsItem.content.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredData = data.filter(newsItem => {
+        const matchesSearch = newsItem.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            newsItem.content.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesCategory = selectedCategories.has('all') || selectedCategories.has(newsItem.category.toLowerCase());
+        return matchesSearch && matchesCategory;
+    });
+
     const newsToDisplay = filteredData.slice(start, end);
 
     newsToDisplay.forEach(newsItem => {
@@ -434,10 +444,11 @@ const displayNews = (start, end, searchQuery = '') => {
     currentIndex = end;
 
     // Show or hide the "Show More" button based on remaining articles
+    const showMoreButton = document.getElementById('show-more-btn');
     if (currentIndex >= filteredData.length) {
-        document.getElementById('show-more-btn').style.display = 'none';
+        showMoreButton.style.display = 'none';
     } else {
-        document.getElementById('show-more-btn').style.display = 'block';
+        showMoreButton.style.display = 'block';
     }
 };
 
@@ -471,11 +482,48 @@ style.innerHTML = `
     .highlight {
         background-color: yellow;
     }
+    .category-button.selected {
+        background-color: black;
+        color: white;
+    }
 `;
 document.head.appendChild(style);
 
 document.getElementById('search-input').addEventListener('input', handleSearch);
 document.getElementById('show-more-btn').addEventListener('click', showMoreNews);
 
+// Category button logic
+document.querySelectorAll('.category-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const category = button.getAttribute('data-category');
+        if (category === 'all') {
+            selectedCategories.clear();
+            selectedCategories.add('all');
+        } else {
+            if (selectedCategories.has('all')) {
+                selectedCategories.delete('all');
+            }
+            if (selectedCategories.has(category)) {
+                selectedCategories.delete(category);
+            } else {
+                selectedCategories.add(category);
+            }
+        }
+        updateCategoryButtons();
+        currentIndex = 0; // Reset index for new category selection
+        displayNews(0, itemsPerPage, document.getElementById('search-input').value);
+    });
+});
+
+const updateCategoryButtons = () => {
+    document.querySelectorAll('.category-button').forEach(button => {
+        const category = button.getAttribute('data-category');
+        if (selectedCategories.has(category) || (category === 'all' && selectedCategories.has('all'))) {
+            button.classList.add('selected');
+        } else {
+            button.classList.remove('selected');
+        }
+    });
+};
 sortNewsByDate();
 displayNews(0, itemsPerPage);
